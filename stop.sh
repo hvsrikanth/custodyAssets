@@ -1,11 +1,18 @@
 #!/bin/bash
 #
-# Copyright IBM Corp All Rights Reserved
+# Stop script for the Asset Custody usecase. There are 6 nodes and each node is stopped in this script.
 #
-# SPDX-License-Identifier: Apache-2.0
-#
-# Exit on first error, print all commands.
-set -ev
 
-# Shut down the Docker containers that might be currently running.
-docker-compose -f docker-compose.yml stop
+sudo docker-compose -f docker-compose-regulator.yml down
+sleep 10
+sudo docker-compose -f docker-compose-depository.yml down
+sleep 10
+sudo docker-compose -f docker-compose-bank.yml down
+sleep 10
+sudo docker-compose -f docker-compose-exchange.yml down
+sleep 10
+sudo docker-compose -f docker-compose-custodian.yml down
+sleep 10
+sudo docker-compose -f docker-compose-investor.yml down
+
+sudo docker ps

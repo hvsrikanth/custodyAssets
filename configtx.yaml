@@ -1,10 +1,7 @@
 ################################################################################
-#
-#   Profile
-#
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
-#
+# Define organzation MSP & channels required by the Custodian Asset usecase.
+# Organization MSPs - 6
+# Orderer - 1
 ################################################################################
 Profiles:
 
@@ -19,6 +16,9 @@ Profiles:
                     - *Investor
                     - *Custodian
                     - *Exchange
+                    - *Bank
+                    - *Depository
+                    - *Regulator
     OrgChannel:
         Consortium: SampleConsortium
         Application:
@@ -27,6 +27,9 @@ Profiles:
                 - *Investor
                 - *Custodian
                 - *Exchange
+                - *Bank
+                - *Depository
+                - *Regulator
 
 ################################################################################
 #
@@ -38,36 +41,22 @@ Profiles:
 ################################################################################
 Organizations:
 
-    # SampleOrg defines an MSP using the sampleconfig.  It should never be used
-    # in production but may be used as a template for other definitions
+    # Orderer definition
     - &OrdererOrg
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: OrdererOrg
-
-        # ID to load the MSP definition as
         ID: OrdererMSP
-
-        # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/example.com/msp
 
+    # Investor definition
     - &Investor
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: InvestorMSP
-
-        # ID to load the MSP definition as
         ID: InvestorMSP
-
         MSPDir: crypto-config/peerOrganizations/investor.example.com/msp
-
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
             - Host: peer0.investor.example.com
               Port: 7051
 
+    # Custodian definition
     - &Custodian
         Name: CustodianMSP
         ID: CustodianMSP
@@ -76,12 +65,40 @@ Organizations:
               - Host: peer0.custodian.example.com
                 Port: 7051
 
+    # Exchange definition
     - &Exchange
         Name: ExchangeMSP
         ID: ExchangeMSP
         MSPDir: crypto-config/peerOrganizations/exchange.example.com/msp
         AnchorPeers:
               - Host: peer0.exchange.example.com
+                Port: 7051
+
+    # Bank definition
+    - &Bank
+        Name: BankMSP
+        ID: BankMSP
+        MSPDir: crypto-config/peerOrganizations/bank.example.com/msp
+        AnchorPeers:
+              - Host: peer0.bank.example.com
+                Port: 7051
+
+    # Depository definition 
+    - &Depository
+        Name: DepositoryMSP
+        ID: DepositoryMSP
+        MSPDir: crypto-config/peerOrganizations/depository.example.com/msp
+        AnchorPeers:
+              - Host: peer0.depository.example.com
+                Port: 7051
+
+    # Regulator definition
+    - &Regulator
+        Name: RegulatorMSP
+        ID: ReglatorMSP
+        MSPDir: crypto-config/peerOrganizations/regulator.example.com/msp
+        AnchorPeers:
+              - Host: peer0.regulator.example.com
                 Port: 7051
 ################################################################################
 #

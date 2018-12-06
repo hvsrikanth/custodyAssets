@@ -1,8 +1,6 @@
 #!/bin/bash
 #
-# Copyright IBM Corp All Rights Reserved
-#
-# SPDX-License-Identifier: Apache-2.0
+# Start script for the Asset Custody usecase. There are 6 nodes and each node is stopped / started in this script.
 #
 # Exit on first error, print all commands.
 set -ev
@@ -10,17 +8,59 @@ set -ev
 # don't rewrite paths for Windows Git Bash users
 export MSYS_NO_PATHCONV=1
 
-docker-compose -f docker-compose.yml down
+SLEEPY=10
+# STOP all the containers
+sudo docker-compose -f docker-compose-regulator.yml down
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-depository.yml down
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-bank.yml down
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-exchange.yml down
+sleep 10
+sudo docker-compose -f docker-compose-custodian.yml down
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-investor.yml down
 
-docker-compose -f docker-compose.yml up -d ca.example.com orderer.example.com peer0.org1.example.com couchdb
-
-# wait for Hyperledger Fabric to start
-# incase of errors when running later commands, issue export FABRIC_START_TIMEOUT=<larger number>
-export FABRIC_START_TIMEOUT=10
-#echo ${FABRIC_START_TIMEOUT}
-sleep ${FABRIC_START_TIMEOUT}
+# START all the containers
+sudo docker-compose -f docker-compose-investor.yml up -d
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-custodian.yml up -d
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-exchange.yml up -d
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-bank.yml up -d
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-depository.yml up -d
+sleep $SLEEPY
+sudo docker-compose -f docker-compose-regulator.yml up -d
+sleep $SLEEPY
 
 # Create the channel
-docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
-# Join peer0.org1.example.com to the channel.
-docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel join -b mychannel.block
+sudo docker exec -e "CORE_PEER_LOCALMSPID=InvestorMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/investor.example.com/users/Admin@investor.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.investor.example.com:7051" cli peer channel create -o orderer.example.com:7050 -c tradingchannel -f /etc/hyperledger/configtx/channel.tx
+sleep $SLEEPY
+
+# Join peer0.investor.example.com to the channel.
+sudo docker exec -e "CORE_PEER_LOCALMSPID=InvestorMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/investor.example.com/users/Admin@investor.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.investor.example.com:7051" cli peer channel join -b tradingchannel.block
+sleep $SLEEPY
+
+# Join peer0.custodian.example.com to the channel.
+sudo docker exec -e "CORE_PEER_LOCALMSPID=CustodianMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/custodian.example.com/users/Admin@custodian.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.custodian.example.com:7051" cli peer channel join -b tradingchannel.block
+sleep $SLEEPY
+
+# Join peer0.exchange.example.com to the channel.
+sudo docker exec -e "CORE_PEER_LOCALMSPID=ExchangeMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/exchange.example.com/users/Admin@exchange.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.exchange.example.com:7051" cli peer channel join -b tradingchannel.block
+sleep $SLEEPY
+
+# Join peer0.bank.example.com to the channel.
+sudo docker exec -e "CORE_PEER_LOCALMSPID=BankMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/bank.example.com/users/Admin@bank.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.bank.example.com:7051" cli peer channel join -b tradingchannel.block
+sleep $SLEEPY
+
+# Join peer0.depository.example.com to the channel.
+sudo docker exec -e "CORE_PEER_LOCALMSPID=DepositoryMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/depository.example.com/users/Admin@depository.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.depository.example.com:7051" cli peer channel join -b tradingchannel.block
+sleep $SLEEPY
+
+# Join peer0.regulator.example.com to the channel.
+sudo docker exec -e "CORE_PEER_LOCALMSPID=RegulatorMSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/regulator.example.com/users/Admin@regulator.example.com/msp" -e "CORE_PEER_ADDRESS=peer0.regulator.example.com:7051" cli peer channel join -b tradingchannel.block
+sleep $SLEEPY
+
