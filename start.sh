@@ -7,20 +7,39 @@ set -ev
 
 # don't rewrite paths for Windows Git Bash users
 export MSYS_NO_PATHCONV=1
-
 SLEEPY=10
+
 # STOP all the containers
-sudo docker-compose -f docker-compose-regulator.yml down
-sleep $SLEEPY
-sudo docker-compose -f docker-compose-depository.yml down
-sleep $SLEEPY
-sudo docker-compose -f docker-compose-bank.yml down
-sleep $SLEEPY
-sudo docker-compose -f docker-compose-exchange.yml down
-sleep 10
-sudo docker-compose -f docker-compose-custodian.yml down
-sleep $SLEEPY
-sudo docker-compose -f docker-compose-investor.yml down
+if [ `sudo docker ps | grep "regulator" | wc -l` != 0 ]; then
+    sudo docker-compose -f docker-compose-regulator.yml down
+    sleep $SLEEPY 
+fi
+
+if [ `sudo docker ps | grep "depository" | wc -l` != 0 ]; then
+    sudo docker-compose -f docker-compose-depository.yml down
+    sleep $SLEEPY 
+fi
+
+if [ `sudo docker ps | grep "bank" | wc -l` != 0 ]; then
+    sudo docker-compose -f docker-compose-bank.yml down
+    sleep $SLEEPY 
+fi
+
+if [ `sudo docker ps | grep "exchange" | wc -l` != 0 ]; then
+    sudo docker-compose -f docker-compose-exchange.yml down
+    sleep $SLEEPY 
+fi
+
+if [ `sudo docker ps | grep "custodian" | wc -l` != 0 ]; then
+    sudo docker-compose -f docker-compose-custodian.yml down
+    sleep $SLEEPY 
+fi
+
+if [ `sudo docker ps | grep "investor" | wc -l` != 0 ]; then
+    sudo docker-compose -f docker-compose-investor.yml down
+    sleep $SLEEPY
+fi
+
 
 # START all the containers
 sudo docker-compose -f docker-compose-investor.yml up -d
