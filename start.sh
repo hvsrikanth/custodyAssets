@@ -3,10 +3,8 @@
 # Start script for the Asset Custody usecase. There are 6 nodes and each node is stopped / started in this script.
 #
 # Exit on first error, print all commands.
-set -ev
+#set -ev
 
-# don't rewrite paths for Windows Git Bash users
-export MSYS_NO_PATHCONV=1
 SLEEPY=10
 
 # STOP all the containers
