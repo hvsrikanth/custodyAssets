@@ -1,7 +1,7 @@
 package main
 
 import (
-    "fmt"
+    //"fmt"
     //"encoding/json"
     "github.com/hyperledger/fabric/core/chaincode/shim"
     pb "github.com/hyperledger/fabric/protos/peer"
@@ -43,17 +43,17 @@ var bcFunctions = map[string] func(shim.ChaincodeStubInterface, []string) pb.Res
 func (t *SmartContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
     //_, args := stub.GetFunctionAndParameters()
     //t.initExchange(stub)
-    fmt.Printf("**********************************")
-    fmt.Printf("----------IN INIT METHOD----------")
-    fmt.Printf("**********************************")
+    logger.Info("**********************************\n")
+    logger.Info("----------IN INIT METHOD----------\n")
+    logger.Info("**********************************\n")
     return shim.Success(nil)
 }
 
 // INVOKE FUNCTION ACCEPS BLOCKCHAIN CODE INVOCATIONS
 func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
-    fmt.Printf("************************************")
-    fmt.Printf("----------IN INVOKE METHOD----------")
-    fmt.Printf("************************************")
+    logger.Info("************************************\n")
+    logger.Info("----------IN INVOKE METHOD----------\n")
+    logger.Info("************************************\n")
     function, args := stub.GetFunctionAndParameters()
     if function == "init" {
         return t.Init(stub)
@@ -69,10 +69,10 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 func main() {
     logger.SetLevel(shim.LogInfo)
     err := shim.Start(new(SmartContract))
-    fmt.Printf("**********************************")
-    fmt.Printf("----------In MAIN METHOD----------")
-    fmt.Printf("**********************************")
+    logger.Info("**********************************\n")
+    logger.Info("----------In MAIN METHOD----------\n")
+    logger.Info("**********************************\n")
     if err != nil {
-        fmt.Printf("Error starting Simple chaincode: %s", err)
+        logger.Info("Error starting Simple chaincode: %s", err)
     }
 }

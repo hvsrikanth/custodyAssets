@@ -1,21 +1,26 @@
 package main
 
 import (
-	"encoding/json"
-	//"strings"
-	//"time"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
-	pb "github.com/hyperledger/fabric/protos/peer"
+    //"fmt"
+    "encoding/json"
+    //"strings"
+    //"time"
+    "github.com/hyperledger/fabric/core/chaincode/shim"
+    pb "github.com/hyperledger/fabric/protos/peer"
 )
-
 
 // METHOD TO CREATE INVESTOR
 func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
+    logger.Info("***************************************\n")
+    logger.Info("---------- IN ONBOARDINVESTOR----------\n")
+    logger.Info("***************************************\n")
+
     // RETURN ERROR IF ARGS IS NOT 7 IN NUMBER
     if len(args) != 7 {
-        return shim.Error("Invalid argument count.")
+        return shim.Error("Invalid argument count. Expecting 7.")
     }
+/**
     // CREATE A TEMP STRUCTURE TO RECEIVE INVESOR DATA FROM API
     dto := struct {
         userName     string  `json:"user_name"`
@@ -32,20 +37,21 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
     if err != nil {
         return shim.Error(err.Error())
     }
-
+**/
+    // MOVE THE INPUT ARGS INTO A STRUCTURE
     // PREPARE THE INPUT VALUES TO WRITE
     _investor := investor {
-        userName:     dto.userName,
-        userFName:    dto.userFName,
-        userLName:    dto.userLName,
-        userIdentity: dto.userIdentity,
-        kycStatus:    dto.kycStatus,
-        depositoryAC: dto.depositoryAC,
-        bankAC:       dto.bankAC,
+        userName:     args[0], //dto.userName,
+        userFName:    args[1], //dto.userFName,
+        userLName:    args[2], //dto.userLName,
+        userIdentity: args[3], //dto.userIdentity,
+        kycStatus:    args[4], //dto.kycStatus,
+        depositoryAC: args[5], //dto.depositoryAC,
+        bankAC:       args[6], //dto.bankAC,
     }
 
     // PREPARE THE KEY VALUE PAIR TO PERSIST THE INVESTOR
-    _investorKey, err := stub.CreateCompositeKey(prefixCustodian, []string{dto.userName})
+    _investorKey, err := stub.CreateCompositeKey(prefixCustodian, []string{_investor.userName})
     // CHECK FOR ERROR IN CREATING COMPOSITE KEY
     if err != nil {
         return shim.Error(err.Error())
@@ -64,6 +70,10 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
     if err != nil {
         return shim.Error(err.Error())
     }
+
+    logger.Info("****************************************\n")
+    logger.Info("---------- OUT ONBOARDINVESTOR----------\n")
+    logger.Info("****************************************\n")
 
     // RETURN SUCCESS
     return shim.Success(nil)
