@@ -1,7 +1,7 @@
 package main
 
 import (
-    //"fmt"
+    "fmt"
     "encoding/json"
     //"strings"
     //"time"
@@ -12,12 +12,16 @@ import (
 // METHOD TO CREATE INVESTOR
 func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-    logger.Info("***************************************\n")
-    logger.Info("---------- IN ONBOARDINVESTOR----------\n")
-    logger.Info("***************************************\n")
+    fmt.Printf("***************************************\n")
+    fmt.Printf("---------- IN ONBOARDINVESTOR----------\n")
+    fmt.Printf("***************************************\n")
 
     // RETURN ERROR IF ARGS IS NOT 7 IN NUMBER
     if len(args) != 7 {
+        fmt.Printf("**************************\n")
+        fmt.Printf("Too few argments... Need 7\n")
+        fmt.Printf("**************************\n")
+
         return shim.Error("Invalid argument count. Expecting 7.")
     }
 /**
@@ -38,7 +42,6 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
         return shim.Error(err.Error())
     }
 **/
-    // MOVE THE INPUT ARGS INTO A STRUCTURE
     // PREPARE THE INPUT VALUES TO WRITE
     _investor := investor {
         userName:     args[0], //dto.userName,
@@ -71,9 +74,9 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
         return shim.Error(err.Error())
     }
 
-    logger.Info("****************************************\n")
-    logger.Info("---------- OUT ONBOARDINVESTOR----------\n")
-    logger.Info("****************************************\n")
+    fmt.Printf("****************************************\n")
+    fmt.Printf("---------- OUT ONBOARDINVESTOR----------\n")
+    fmt.Printf("****************************************\n")
 
     // RETURN SUCCESS
     return shim.Success(nil)

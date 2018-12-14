@@ -1,12 +1,9 @@
 package main
 
 import (
-    //"encoding/json"
     "time"
-    //"errors"
-    //"github.com/hyperledger/fabric/core/chaincode/shim"
-    //"strings"
 )
+
 // DATA STRUCTURE TO CAPTURE INVESTOR DETAILS BY CUSTODIAN
 // Key consists of custodianPrefix + userName
 type investor struct {
@@ -39,6 +36,13 @@ type investorTrade struct {
 }
 
 // DATA STRUCTURE TO CAPTURE TRANSACTION DETAILS BY BANK
+// Key consists of exchangePrefix only
+type bankMaster struct {
+    userName    string    `json:"user_name"`
+    bankAC      string    `json:"bank_ac"`
+    balance     float32   `json:"balance"`
+}
+
 // Key consists of bankPrefix + userName + transUUID
 type bankTransaction struct {
     transUUID   string    `json:"trans_uuid"`

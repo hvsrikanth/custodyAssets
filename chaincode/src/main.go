@@ -1,14 +1,13 @@
 package main
 
 import (
-    //"fmt"
-    //"encoding/json"
+    "fmt"
     "github.com/hyperledger/fabric/core/chaincode/shim"
     pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 const prefixCustodian = "CUSTDN"
-//const prefixBank = "BNK"
+const prefixBank = "BNK"
 //const prefixExchange = "XCHNG"
 //const prefixDepository = "DPSTRY"
 
@@ -17,8 +16,10 @@ var logger = shim.NewLogger("main")
 type SmartContract struct {
 }
 
+
 // MAPPING BETWEEN FUNCTION NAMES IN APIs and GO METHODS
-var bcFunctions = map[string] func(shim.ChaincodeStubInterface, []string) pb.Response{
+var bcFunctions = map[string] func(shim.ChaincodeStubInterface, []string) pb.Response {
+
     // CUSTODIAN PEER
     "onboard_investor":       onboardInvestor,
     //"check_kyc":              checkKYC,
@@ -27,6 +28,7 @@ var bcFunctions = map[string] func(shim.ChaincodeStubInterface, []string) pb.Res
     //"get_investor_dashboard": getInvestorDashboards,
 
     // BANK PEER
+    "init_bank":             initBank,
     //"execute_transaction": executeTransaction,
 
     // EXCHANGE PEER
@@ -38,30 +40,34 @@ var bcFunctions = map[string] func(shim.ChaincodeStubInterface, []string) pb.Res
     //"record_trade":    recordTrade,
 }
 
+
 // INIT CALLBACK REPRESENTING INVOCATION OF CHAINCODE
-// INITIALIZE EXCHANGE STRUCTURE WITH MASTER DATA
 func (t *SmartContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
     //_, args := stub.GetFunctionAndParameters()
-    //t.initExchange(stub)
-    logger.Info("**********************************\n")
-    logger.Info("----------IN INIT METHOD----------\n")
-    logger.Info("**********************************\n")
+    fmt.Println("**********************************")
+    fmt.Println("----------IN INIT METHOD----------")
+    fmt.Println("**********************************")
     return shim.Success(nil)
 }
 
 // INVOKE FUNCTION ACCEPS BLOCKCHAIN CODE INVOCATIONS
 func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
-    logger.Info("************************************\n")
-    logger.Info("----------IN INVOKE METHOD----------\n")
-    logger.Info("************************************\n")
+
+    fmt.Println("************************************")
+    fmt.Println("----------IN INVOKE METHOD----------")
+    fmt.Println("************************************")
+
+    // GET THE FUNCION INVOKED AND ARGS FROM SHIM
     function, args := stub.GetFunctionAndParameters()
-    if function == "init" {
-        return t.Init(stub)
-    }
+    fmt.Println("Function From Command Line: ", function)
+
+    // GET THE METHOD TO INVOKE FROM FUNCTION MAPPING
     bcFunc := bcFunctions[function]
     if bcFunc == nil {
+        fmt.Println("ERROR: Function Mapping Not Found")
         return shim.Error("Invalid invoke function.")
-        }
+    }
+
     return bcFunc(stub, args)
 }
 
@@ -69,10 +75,13 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 func main() {
     logger.SetLevel(shim.LogInfo)
     err := shim.Start(new(SmartContract))
-    logger.Info("**********************************\n")
-    logger.Info("----------In MAIN METHOD----------\n")
-    logger.Info("**********************************\n")
+
+    fmt.Println("**********************************")
+    fmt.Println("----------In MAIN METHOD----------")
+    fmt.Println("**********************************")
+
     if err != nil {
-        logger.Info("Error starting Simple chaincode: %s", err)
+        fmt.Println("Error starting Simple chaincode: %s", err)
     }
 }
+
