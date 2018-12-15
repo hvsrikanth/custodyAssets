@@ -23,8 +23,7 @@ func initBank(stub shim.ChaincodeStubInterface, args []string) pb.Response {
                      bankMaster {userName: "madhurib",  bankAC: "HDFC00002", balance:20000},
                      bankMaster {userName: "naveens",   bankAC: "HDFC00003", balance:30000},
                     }
-    i := 0
-    for (i<len(_bankMaster)) {
+    for i:=0;i<len(_bankMaster);i++ {
 
         fmt.Println("i is : ", i)
 

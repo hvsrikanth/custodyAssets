@@ -3,6 +3,5 @@
 # Exit on first error, print all commands.
 set -ev
 
-rm main
 go build main.go data.go invokeCustodian.go invokeBank.go
 
