@@ -29,7 +29,7 @@ var bcFunctions = map[string] func(shim.ChaincodeStubInterface, []string) pb.Res
 
     // BANK PEER
     "init_bank":             initBank,
-    //"execute_transaction": executeTransaction,
+    "execute_transaction": executeTransaction,
 
     // EXCHANGE PEER
     //"init_exchange": initExchange,
@@ -73,7 +73,7 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 
 // MAIN METHOD
 func main() {
-    logger.SetLevel(shim.LogInfo)
+    logger.SetLevel(shim.LogDebug)
     err := shim.Start(new(SmartContract))
 
     fmt.Println("**********************************")
@@ -84,4 +84,3 @@ func main() {
         fmt.Println("Error starting Simple chaincode: %s", err)
     }
 }
-

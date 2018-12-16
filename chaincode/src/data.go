@@ -36,11 +36,11 @@ type investorTrade struct {
 }
 
 // DATA STRUCTURE TO CAPTURE TRANSACTION DETAILS BY BANK
-// Key consists of exchangePrefix only
+// Key consists of bankPrefix + userName
 type bankMaster struct {
     userName    string    `json:"user_name"`
     bankAC      string    `json:"bank_ac"`
-    balance     float32   `json:"balance"`
+    balance     float64   `json:"balance"`
 }
 
 // Key consists of bankPrefix + userName + transUUID
@@ -49,8 +49,8 @@ type bankTransaction struct {
     userName    string    `json:"user_name"`
     bankAC      string    `json:"bank_ac"`
     transDate   time.Time `json:"trans_date"`
-    transAmount float32   `json:"trans_amount"`
-    balance     float32   `json:"balance"`
+    transAmount float64   `json:"trans_amount"`
+    balance     float64   `json:"balance"`
 }
 
 // DATA STRUCTURE TO CAPTURE TRADING DETAILS BY EXCHANGE
@@ -82,4 +82,3 @@ type depositoryTransaction struct {
     stockPrice  float32   `json:"stock_price"`
     stockValue  float32   `json:"stock_value"`
 }
-

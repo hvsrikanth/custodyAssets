@@ -14,7 +14,6 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
 
     fmt.Printf("***************************************\n")
     fmt.Printf("---------- IN ONBOARDINVESTOR----------\n")
-    fmt.Printf("***************************************\n")
 
     // RETURN ERROR IF ARGS IS NOT 7 IN NUMBER
     if len(args) != 7 {
@@ -24,33 +23,16 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
 
         return shim.Error("Invalid argument count. Expecting 7.")
     }
-/**
-    // CREATE A TEMP STRUCTURE TO RECEIVE INVESOR DATA FROM API
-    dto := struct {
-        userName     string  `json:"user_name"`
-        userFName    string  `json:"user_fname"`
-        userLName    string  `json:"user_lname"`
-        userIdentity string  `json:"user_identity"`
-        kycStatus    string  `json:"kyc_status"`
-        depositoryAC string  `json:"depository_ac"`
-        bankAC       string  `json:"bank_ac"`
-    } {}
 
-    // CHECK FOR ERROR IN PARSING INPUT
-    err := json.Unmarshal([]byte(args[0]), &dto)
-    if err != nil {
-        return shim.Error(err.Error())
-    }
-**/
     // PREPARE THE INPUT VALUES TO WRITE
     _investor := investor {
-        userName:     args[0], //dto.userName,
-        userFName:    args[1], //dto.userFName,
-        userLName:    args[2], //dto.userLName,
-        userIdentity: args[3], //dto.userIdentity,
-        kycStatus:    args[4], //dto.kycStatus,
-        depositoryAC: args[5], //dto.depositoryAC,
-        bankAC:       args[6], //dto.bankAC,
+        userName:     args[0],
+        userFName:    args[1],
+        userLName:    args[2],
+        userIdentity: args[3],
+        kycStatus:    args[4],
+        depositoryAC: args[5],
+        bankAC:       args[6],
     }
 
     // PREPARE THE KEY VALUE PAIR TO PERSIST THE INVESTOR
@@ -62,7 +44,7 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
 
     // MARSHAL INVESTOR RECORD
     _investorBytes, err := json.Marshal(_investor)
-    // CHECK FOR ERROR IN MARSHALING 
+    // CHECK FOR ERROR IN MARSHALING
     if err != nil {
         return shim.Error(err.Error())
     }
@@ -74,11 +56,9 @@ func onboardInvestor(stub shim.ChaincodeStubInterface, args []string) pb.Respons
         return shim.Error(err.Error())
     }
 
-    fmt.Printf("****************************************\n")
     fmt.Printf("---------- OUT ONBOARDINVESTOR----------\n")
     fmt.Printf("****************************************\n")
 
     // RETURN SUCCESS
     return shim.Success(nil)
 }
-
